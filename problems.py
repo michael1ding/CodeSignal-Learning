@@ -129,3 +129,8 @@ def isCryptSolution(crypt, solution):
         return False
     
     return (word1 + word2) == word3
+
+
+def binarySearch(solution):
+    pass
+
