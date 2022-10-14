@@ -131,6 +131,41 @@ def isCryptSolution(crypt, solution):
     return (word1 + word2) == word3
 
 
-def binarySearch(solution):
-    pass
-
+def removeKFromList(l, k):
+    # have pointers to 2 nodes, curr and next
+    # if curr is null or next is null, break
+    # if next value is k, set curr.next to next.next
+    
+    if l == None:
+        return l
+    
+    if l.next == None and l.value == k:
+        return None
+    elif l.next == None:
+        return l
+        
+    curr = l
+    over = curr.next
+    
+    while True:
+        if curr == None and over == None:
+            break
+        elif over == None:
+            if curr.value == k:
+                return None
+            break
+        
+        if curr.value == k:
+            l = over
+            curr = over
+            over = over.next
+            continue
+        
+        if over.value == k:
+            curr.next = over.next
+            over = over.next
+        else:
+            curr = curr.next
+            over = over.next
+    
+    return l
