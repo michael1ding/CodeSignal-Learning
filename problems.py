@@ -169,4 +169,3 @@ def removeKFromList(l, k):
             over = over.next
     
     return l
-    
