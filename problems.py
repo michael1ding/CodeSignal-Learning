@@ -5,6 +5,9 @@ CodeSignal Practice Problems!
 """
 
 
+import math
+
+
 def firstDuplicate(a):
     vals = set()
     
@@ -169,4 +172,47 @@ def removeKFromList(l, k):
             over = over.next
     
     return l
+
+
+
+def isListPalindrome(l):
+    length = 0
+    
+    if l == None or l.next == None:
+        return True
+        
+    temp = l
+    while True:
+        if temp == None:
+            break
+        else:
+            length += 1
+            temp = temp.next
+    
+    temp = l
+    
+    for i in range(0, math.ceil(length / 2)):
+        temp = temp.next
+    
+    next_node = temp.next
+    
+    while next_node and next_node.next:
+        place_holder = next_node.next
+        next_node.next = temp
+        temp = next_node
+        next_node = place_holder
+        
+    if next_node:
+        next_node.next = temp
+        temp = next_node
+    
+    for i in range(0, math.floor(length / 2)):
+        if l.value != temp.value:
+            print (l.value, temp.value)
+            return False
+        else:
+            l = l.next
+            temp = temp.next
+    
+    return True
     
