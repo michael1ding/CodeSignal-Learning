@@ -7,6 +7,11 @@ CodeSignal Practice Problems!
 
 import math
 
+class ListNode:
+    def __init__(self, x):
+        self.value = x
+        self.next = None
+
 
 def firstDuplicate(a):
     vals = set()
@@ -216,3 +221,190 @@ def isListPalindrome(l):
     
     return True
     
+def reverseLL(l):
+    temp = l.next
+    l.next = None
+    
+    while temp:
+        place_holder = temp.next
+        temp.next = l
+        l = temp
+        temp = place_holder
+        
+    return l
+        
+def findLength(l):
+    length = 0
+    while l:
+        length += 1
+        l = l.next
+        
+    return length
+
+def addTwoHugeNumbers(a, b):
+    """
+    1. reverse a and b
+    2. add with carries
+    3. reverse the result list
+    """
+    a = reverseLL(a)
+    b = reverseLL(b)
+    
+    a_length = findLength(a)
+    b_length = findLength(b)
+    
+    prev = None
+    carry = 0
+    
+    for i in range(0, min(a_length, b_length)):
+        out = ListNode(0)
+        if a.value + b.value + carry > 9999:
+            out.value = a.value + b.value + carry - 10000
+            carry = 1
+        else:
+            out.value = a.value + b.value + carry
+            carry = 0
+            
+        a = a.next
+        b = b.next
+        if prev:
+            prev.next = out
+        else:
+            first = out
+        
+        prev = out
+    
+    for i in range(0, max(a_length, b_length) - min(a_length, b_length)):
+        out = ListNode(0)
+        if a_length > b_length:
+            if a.value + carry > 9999:
+                out.value = a.value + carry - 10000
+                carry = 1
+            else:
+                out.value = a.value + carry
+                carry = 0
+            
+            a = a.next
+        else:
+            if b.value + carry > 9999:
+                out.value = b.value + carry - 10000
+                carry = 1
+            else:
+                out.value = b.value + carry
+                carry = 0
+            
+            b = b.next
+            
+        if prev:
+            prev.next = out
+        else:
+            first = out
+        
+        prev = out
+    
+    if carry:
+        out = ListNode(1)
+        prev.next = out
+    
+    res = reverseLL(first)
+    return res
+
+
+def mergeTwoLinkedLists(l1, l2):
+    out = None
+    temp = None
+    while l1 and l2:
+        if l1.value <= l2.value:
+            if temp == None:
+                out = l1
+                temp = l1
+                l1 = l1.next
+            else:
+                temp.next = l1
+                temp = l1
+                l1 = l1.next
+        else:
+            if temp == None:
+                out = l2
+                temp = l2
+                l2 = l2.next
+            else:
+                temp.next = l2
+                temp = l2
+                l2 = l2.next
+
+    if l1 and temp:
+        temp.next = l1
+    elif l1:
+        out = l1
+    elif l2 and temp:
+        temp.next = l2
+    elif l2:
+        out = l2
+        
+    return out
+
+
+def reverseNodesInKGroups(l, k):
+    if k == 1:
+        return l
+    
+    temp = l
+    count = 0
+    while temp:
+        count += 1
+        temp = temp.next
+    
+    l_start = None
+    temp = l
+    last_first = None
+    for _ in range(0, math.floor(count / k)):
+        first = temp
+        next_node = temp.next
+        temp.next = None
+        for _ in range(0, k - 1):
+            placeholder = next_node.next
+            next_node.next = temp
+            temp = next_node
+            next_node = placeholder
+        
+        if l_start == None:
+            l_start = temp
+        
+        if last_first:
+            last_first.next = temp
+        
+        last_first = first
+        temp = next_node
+    
+    if last_first:
+        last_first.next = temp
+    return l_start
+
+def rearrangeLastN(l, n):
+    """
+    1. keep reference to first node
+    2. keep 2 pointers of size n + 1
+    3. if right.next == nullptr (None), set temp = left.next, left.next to None
+    4. set right.next to first, and return temp
+    """
+    if n == 0:
+        return l
+    
+    first = l
+    left = l
+    right = l
+    for _ in range(0, n):
+        if right.next == None:
+           return first
+        right = right.next
+
+    while right.next:
+        left = left.next
+        right = right.next
+    
+    temp = left.next
+    left.next = None
+    right.next = first
+    
+    return temp
