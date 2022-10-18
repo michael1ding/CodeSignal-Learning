@@ -408,3 +408,25 @@ def rearrangeLastN(l, n):
     right.next = first
     
     return temp
+
+
+def areFollowingPatterns(strings, patterns):
+    patternmap = dict()
+    mappedpatterns = set()
+    for i in range(0, len(strings)):
+        if strings[i] not in patternmap:
+            if patterns[i] in mappedpatterns:
+                return False
+            else:
+                patternmap[strings[i]] = patterns[i]
+                mappedpatterns.add(patterns[i])
+        elif patterns[i] != patternmap[strings[i]]:
+            return False
+    
+    return True
+    
+    for i in range(0, len(strings)):
+        if strings[i] != patternmap[patterns[i]]:
+            return False
+            
+    return True
