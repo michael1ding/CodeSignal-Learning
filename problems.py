@@ -430,3 +430,18 @@ def areFollowingPatterns(strings, patterns):
             return False
             
     return True
+
+
+def twoSumSorted(self, numbers, target):
+    left = 1
+    right = len(numbers)
+    
+    while True:
+        if left == right:
+            return [-1, -1]
+        elif numbers[left - 1] + numbers[right - 1] == target:
+            return [left, right]
+        elif numbers[left - 1] + numbers[right - 1] > target:
+            right -= 1
+        elif numbers[left - 1] + numbers[right - 1] < target:
+            left += 1
