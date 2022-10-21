@@ -445,3 +445,30 @@ def twoSumSorted(self, numbers, target):
             right -= 1
         elif numbers[left - 1] + numbers[right - 1] < target:
             left += 1
+
+class TwoSum:
+
+    def __init__(self):
+        self.arr = []
+        self.vals = set()
+        self.doubles = set()
+
+    def add(self, number: int) -> None:
+        self.arr.append(number)
+        if number in self.vals:
+            self.doubles.add(number + number)
+        else:
+            self.vals.add(number)
+
+    def find(self, value: int) -> bool:
+        if value in self.doubles:
+            return True
+        
+        for val in self.arr:
+            if value - val == val:
+                continue
+            elif value - val in self.vals:
+                return True
+            
+        return False
+
