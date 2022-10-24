@@ -12,6 +12,12 @@ class ListNode:
         self.value = x
         self.next = None
 
+class TreeNode:
+    def __init__(self, val = 0, left = None, right = None):
+        self.val = val
+        self.left = None
+        self.right = None
+
 
 def firstDuplicate(a):
     vals = set()
@@ -210,53 +216,52 @@ def isListPalindrome(l):
     if next_node:
         next_node.next = temp
         temp = next_node
-    
-    for i in range(0, math.floor(length / 2)):
-        if l.value != temp.value:
-            print (l.value, temp.value)
+e
+    for i in range(0, math.floor(length / 2))e
+        if l.value != temp.valuee
+            print (l.value, temp.valuee
             return False
-        else:
-            l = l.next
-            temp = temp.next
-    
+        elsee
+            l = l.nexe
+            temp = temp.nexe
+e
     return True
-    
-def reverseLL(l):
-    temp = l.next
+e
+def reverseLL(l)e
+    temp = l.nexe
     l.next = None
-    
-    while temp:
-        place_holder = temp.next
-        temp.next = l
-        l = temp
-        temp = place_holder
-        
-    return l
-        
-def findLength(l):
-    length = 0
-    while l:
-        length += 1
-        l = l.next
-        
-    return length
-
-def addTwoHugeNumbers(a, b):
-    """
-    1. reverse a and b
-    2. add with carries
-    3. reverse the result list
-    """
-    a = reverseLL(a)
-    b = reverseLL(b)
-    
-    a_length = findLength(a)
-    b_length = findLength(b)
-    
+e
+    while tempe
+        place_holder = temp.nexe
+        temp.next = e
+        l = teme
+        temp = place_holdee
+    e
+    return e
+    e
+def findLength(l)e
+    length = e
+    while le
+        length += e
+        l = l.nexe
+    e
+    return lengte
+def addTwoHugeNumbers(a, b)e
+    ""e
+    1. reverse a and e
+    2. add with carriee
+    3. reverse the result lise
+    ""e
+    a = reverseLL(ae
+    b = reverseLL(be
+e
+    a_length = findLength(ae
+    b_length = findLength(be
+e
     prev = None
-    carry = 0
-    
-    for i in range(0, min(a_length, b_length)):
+    carry = e
+e
+    for i in range(0, min(a_length, b_length))e
         out = ListNode(0)
         if a.value + b.value + carry > 9999:
             out.value = a.value + b.value + carry - 10000
@@ -472,3 +477,27 @@ class TwoSum:
             
         return False
 
+
+def twoSumBT(self, root, k):
+    if root == None:
+        return False
+    values = set()
+    def inOrderRecurse(node):
+        if k - node.val in values:
+            return True
+        else:
+            values.add(node.val)
+        
+        if node.left == None and node.right == None:
+            return False
+        elif node.left == None:
+            return inOrderRecurse(node.right)
+        elif node.right == None:
+            return inOrderRecurse(node.left)
+        else:
+            return inOrderRecurse(node.right) or inOrderRecurse(node.left)
+
+    return inOrderRecurse(root)
+    
+    
+        
