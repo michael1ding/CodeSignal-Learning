@@ -216,52 +216,53 @@ def isListPalindrome(l):
     if next_node:
         next_node.next = temp
         temp = next_node
-e
-    for i in range(0, math.floor(length / 2))e
-        if l.value != temp.valuee
-            print (l.value, temp.valuee
+
+    for i in range(0, math.floor(length / 2)):
+        if l.value != temp.value:
+            print (l.value, temp.value)
             return False
-        elsee
+        else:
             l = l.nexe
             temp = temp.nexe
-e
+
     return True
-e
-def reverseLL(l)e
-    temp = l.nexe
+
+def reverseLL(l):
+    temp = l.next
     l.next = None
-e
-    while tempe
+
+    while temp:
         place_holder = temp.nexe
-        temp.next = e
-        l = teme
-        temp = place_holdee
-    e
-    return e
-    e
-def findLength(l)e
-    length = e
-    while le
-        length += e
-        l = l.nexe
-    e
-    return lengte
-def addTwoHugeNumbers(a, b)e
-    ""e
-    1. reverse a and e
-    2. add with carriee
-    3. reverse the result lise
-    ""e
-    a = reverseLL(ae
-    b = reverseLL(be
-e
-    a_length = findLength(ae
-    b_length = findLength(be
-e
+        temp.next = l
+        l = temp
+        temp = place_holder
+    
+    return l
+    
+def findLength(l):
+    length = l
+    while l:
+        length += l
+        l = l.next
+    
+    return length
+
+def addTwoHugeNumbers(a, b):
+    """
+    1. reverse a and b
+    2. add with carry
+    3. reverse the result list
+    """
+    a = reverseLL(a)
+    b = reverseLL(b)
+
+    a_length = findLength(a)
+    b_length = findLength(b)
+
     prev = None
-    carry = e
-e
-    for i in range(0, min(a_length, b_length))e
+    carry = 0
+
+    for i in range(0, min(a_length, b_length)):
         out = ListNode(0)
         if a.value + b.value + carry > 9999:
             out.value = a.value + b.value + carry - 10000
@@ -498,6 +499,99 @@ def twoSumBT(self, root, k):
             return inOrderRecurse(node.right) or inOrderRecurse(node.left)
 
     return inOrderRecurse(root)
-    
-    
+
+
+def threeSum(self, nums):
+    nums.sort()
+    #seen = set()
+    out = []
+    for l in range(0, len(nums)):
+        if l != 0 and nums[l] == nums[l-1]:
+            continue
         
+        lo = l + 1
+        hi = len(nums) - 1
+        while lo < hi:
+            if lo != l+1 and nums[lo] == nums[lo - 1]:
+                lo += 1
+                continue
+            
+            if nums[lo] + nums[hi] < -1* nums[l]:
+                lo += 1
+            elif nums[lo] + nums[hi] > -1*nums[l]:
+                hi -= 1
+            else:
+                # if (nums[l], nums[lo]) not in seen:
+                #     seen.add((nums[l], nums[lo]))
+                out.append([nums[l], nums[lo], nums[hi]])  
+                lo += 1
+                
+    return out
+
+def findSubArraysWithEqualSum(self, nums):
+    seen = set()
+    for i in range (0, len(nums)):
+        if i + 1 >= len(nums):
+            continue
+        
+        if nums[i] + nums[i+1] not in seen:
+            seen.add(nums[i] + nums[i+1])
+        else:
+            return True
+    
+    return False
+
+
+def letterCombinations(self, digits):
+    def generateWords(curr_str, ind, digits, outputs):
+        if ind == len(digits):
+            if curr_str != "":
+                outputs.append(curr_str)
+            return
+
+        if int(digits[ind]) == 2:
+            generateWords(curr_str + "a", ind + 1, digits, outputs)
+            generateWords(curr_str + "b", ind + 1, digits, outputs)
+            generateWords(curr_str + "c", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 3:
+            generateWords(curr_str + "d", ind + 1, digits, outputs)
+            generateWords(curr_str + "e", ind + 1, digits, outputs)
+            generateWords(curr_str + "f", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 4:
+            generateWords(curr_str + "g", ind + 1, digits, outputs)
+            generateWords(curr_str + "h", ind + 1, digits, outputs)
+            generateWords(curr_str + "i", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 5:
+            generateWords(curr_str + "j", ind + 1, digits, outputs)
+            generateWords(curr_str + "k", ind + 1, digits, outputs)
+            generateWords(curr_str + "l", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 6:
+            generateWords(curr_str + "m", ind + 1, digits, outputs)
+            generateWords(curr_str + "n", ind + 1, digits, outputs)
+            generateWords(curr_str + "o", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 7:
+            generateWords(curr_str + "p", ind + 1, digits, outputs)
+            generateWords(curr_str + "q", ind + 1, digits, outputs)
+            generateWords(curr_str + "r", ind + 1, digits, outputs)
+            generateWords(curr_str + "s", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 8:
+            generateWords(curr_str + "t", ind + 1, digits, outputs)
+            generateWords(curr_str + "u", ind + 1, digits, outputs)
+            generateWords(curr_str + "v", ind + 1, digits, outputs)
+        elif int(digits[ind]) == 9:
+            generateWords(curr_str + "w", ind + 1, digits, outputs)
+            generateWords(curr_str + "x", ind + 1, digits, outputs)
+            generateWords(curr_str + "y", ind + 1, digits, outputs)
+            generateWords(curr_str + "z", ind + 1, digits, outputs)
+
+    out = []
+    curr_str = ""
+    generateWords(curr_str, 0, digits, out)
+    return out
+
+def generateParenthesis(n):
+    out = []
+
+
+def binarySearch(nums):
+    
