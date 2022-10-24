@@ -1,6 +1,6 @@
 # CodeSignal solutions
 
-Solutions of coding from [CodeSignal](https://codesignal.com) platform
+Solutions of coding from [CodeSignal](https://codesignal.com) and [LeetCode](https://leetcode.com/) platforms
 
 
 
