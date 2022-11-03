@@ -5,7 +5,9 @@ CodeSignal Practice Problems!
 """
 
 
+from distutils.command.build import build
 import math
+from tarfile import _Bz2ReadableFileobj
 
 class ListNode:
     def __init__(self, x):
@@ -610,13 +612,155 @@ def binarySearch(nums, target):
 
 
 
+import queue
+
+class peekingQueue(queue.Queue):
+    def peek(self):
+        with self.mutex:
+            return self.queue[0]
 
 class HitCounter:
 
     def __init__(self):
-        
+        self.hits = peekingQueue()
+        self.duration = 5 * 60 # 5 minutes
 
     def hit(self, timestamp: int) -> None:
-        
+        self.hits.put(timestamp)
 
     def getHits(self, timestamp: int) -> int:
+        start = timestamp - self.duration + 1
+        while True:
+            if self.hits.qsize() == 0:
+                break
+            
+            if self.hits.peek() < start:
+                self.hits.get()
+            else:
+                break
+        
+        return self.hits.qsize()
+
+from collections import OrderedDict
+class LRUCache:
+    """
+    Requirements:
+        1. be able to cache the values of certain keys and retrive these quickly (constant time)
+        2. update or put values very quickly
+        3. boot out the oldest key (move to front heuristic)
+
+    Implementation:
+        1. dict
+        2. key in dict
+        3. linked list? array (O(n))?
+    """
+    class DoublyNode:
+        def __init__(self, key, val) -> None:
+            self.value = val
+            self.key = key
+
+            self.next = None
+            self.prev = None
+
+
+    def __init__(self, capacity: int):
+        self.stored = dict()
+        self.list_front = None
+        self.list_back = None
+        self.capacity = capacity
+        self.list_len = 0
+
+
+    def get(self, key: int) -> int:
+        self.stored.get(key)
+        if key in self.stored:
+            temp = self.stored.pop(key)
+            self.stored[key] = temp
+            return self.stored[key]
+        else:
+            return -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.stored:
+            self.stored.pop(key)
+            self.stored[key] = value
+        else:
+            if len(self.stored) == self.capacity:
+                self.stored.popitem(last = False)
+
+            self.stored[key] = value    
+
+
+class Node(object):
+    def __init__(self, val=None, children=[]):
+        self.val = val
+        self.children = children
+class Codec:
+
+    def serialize(self, root: Node) -> str:
+        import queue
+        """Encodes a tree to a single string.
+        
+        :type root: Node
+        :rtype: str
+        """
+        to_visit = queue.Queue()
+        output = []
+        to_visit.put(root)
+
+        while True:
+            if to_visit.qsize() == 0:
+                return " ".join(output)
+            
+            n = to_visit.get()
+            if n == None:
+                output.append(-1)
+            else:
+                output.append(n.val)
+                to_visit.put(output.left)
+                to_visit.put(output.right)
+
+    # def recursive_build(node):
+    #     if node == None:
+    #         return None
+        
+
+	
+    def deserialize(self, data: str) -> Node:
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: Node
+        """
+        nodes = data.split(" ")
+        if len(nodes) == 1 and nodes[0] == -1:
+            return None
+
+        building_nodes_q = queue.Queue()
+        root = Node(val = nodes[0])
+        building_nodes_q.put(nodes[0])
+        index = 0
+
+        while building_nodes_q.qsize() != 0:
+            n = building_nodes_q.get()
+            if n.val == -1:
+                continue
+
+            left = Node(nodes[index+1])
+            right = Node(nodes[index+2])
+
+            n.children()
+
+
+
+
+            
+
+            
+                
+
+        return root
+
+
+
+        
