@@ -8,6 +8,7 @@ CodeSignal Practice Problems!
 from distutils.command.build import build
 import math
 from tarfile import _Bz2ReadableFileobj
+from xmlrpc.server import list_public_methods
 
 class ListNode:
     def __init__(self, x):
@@ -642,6 +643,14 @@ class HitCounter:
         return self.hits.qsize()
 
 from collections import OrderedDict
+
+class DoublyNode:
+        def __init__(self) -> None:
+            self.value = None
+            self.key = None
+
+            self.next = None
+            self.prev = None
 class LRUCache:
     """
     Requirements:
@@ -654,41 +663,66 @@ class LRUCache:
         2. key in dict
         3. linked list? array (O(n))?
     """
-    class DoublyNode:
-        def __init__(self, key, val) -> None:
-            self.value = val
-            self.key = key
-
-            self.next = None
-            self.prev = None
 
 
     def __init__(self, capacity: int):
-        self.stored = dict()
-        self.list_front = None
-        self.list_back = None
+        self.stored = dict() # stores key -> doublynode
+        self.list_front = DoublyNode()
+        self.list_back = DoublyNode()
+        self.list_front.next = self.list_back
+        self.list_back.prev = self.list_front
+
         self.capacity = capacity
         self.list_len = 0
 
 
     def get(self, key: int) -> int:
-        self.stored.get(key)
         if key in self.stored:
-            temp = self.stored.pop(key)
-            self.stored[key] = temp
-            return self.stored[key]
+            # print(self.stored[key].prev.key)
+            p = self.stored[key].prev
+            n = self.stored[key].next
+            p.next = n
+            n.prev = p
+            self.stored[key].next = self.list_front.next
+            self.stored[key].next.prev = self.stored[key]
+            self.stored[key].prev = self.list_front
+            self.list_front.next = self.stored[key]
+            return self.stored[key].value
         else:
             return -1
+        
 
     def put(self, key: int, value: int) -> None:
-        if key in self.stored:
-            self.stored.pop(key)
-            self.stored[key] = value
-        else:
-            if len(self.stored) == self.capacity:
-                self.stored.popitem(last = False)
+        if key not in self.stored:
+            self.list_len += 1
+            new_node = DoublyNode()
+            new_node.value = value
+            new_node.key = key
+            new_node.next = self.list_front.next
+            self.list_front.next = new_node
+            new_node.prev = self.list_front
+            new_node.next.prev = new_node
 
-            self.stored[key] = value    
+            self.stored[key] = new_node
+
+            if self.list_len > self.capacity:
+                remove_key = self.list_back.prev.key
+                self.list_back.prev = self.list_back.prev.prev
+                self.list_back.prev.next = self.list_back
+                self.list_len -= 1
+                del self.stored[remove_key]
+
+        else:
+            self.stored[key].prev.next = self.stored[key].next
+            self.stored[key].next.prev = self.stored[key].prev
+            self.stored[key].next = self.list_front.next
+            self.list_front.next = self.stored[key]
+            self.stored[key].prev = self.list_front
+            self.stored[key].next.prev = self.stored[key]
+            self.stored[key].value = value
+            
+
+
 
 
 class Node(object):
