@@ -783,11 +783,7 @@ class Codec:
             left = Node(nodes[index+1])
             right = Node(nodes[index+2])
 
-            n.children()
-
-
-
-
+            n.children
             
 
             
