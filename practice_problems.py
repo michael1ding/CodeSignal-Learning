@@ -738,6 +738,7 @@ class Codec:
         :type root: Node
         :rtype: str
         """
+        
         to_visit = queue.Queue()
         output = []
         to_visit.put(root)
