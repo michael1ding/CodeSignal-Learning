@@ -794,5 +794,10 @@ class Codec:
 
 
 
-        
+class Solution:
+    """
+    
+    """
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        letter_log_address   
         

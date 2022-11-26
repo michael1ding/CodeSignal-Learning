@@ -1,5 +1,7 @@
 #include <unordered_map>
 #include <map>
+#include <unordered_set>
+#include <vector>
 
 using namespace std;
 
@@ -101,7 +103,87 @@ class LRUCache {
 };
 
 
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_set<int> seen;
+        for (unsigned int i = 0; i < nums.size(); i++) {
+            if (seen.find(nums[i]) == seen.end()) {
+                seen.insert(nums[i]);
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
+};
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> needed;
+        vector<int> out = {-1, -1};
+        for (unsigned int i = 0; i < nums.size(); i++) {
+            if (needed.find(nums[i]) == needed.end()) {
+                needed[target - nums[i]] = i;
+            } else {
+                out = {needed[nums[i]], (int) i};
+                return out;
+            }
+        }
+        return out;
+    }
+};
+
+class Solution {
+public:
+    /*
+    brute force:
+    for each index in nums, loop through and multiply all numbers in nums except this index
+
+    intuition: maintain a running bidirectional "tally" and we only need to loop through forward once
+                and reverse once. then we onnly need to multiple array indexes together forward[i-1] * backward[i+1]
+
+                time: O(n)
+                space: O(n)
+
+    approach:
+    - loop through forward and maintain a vector<int> forward and running multiplcation of all elements up to and including i
+    - loop through backward and maintain a vector<int> backwad and running multiplcation of all elements from len(num) to i
+
+    - create vector<int> out, out[i] = forward[i-1] * backward[i+1]
+    - some checking logic for i-1 and i+1 being out of bounds
+
+    optimized approach:
+    - similar to approach 1, we still carry but this time we use our output array as our caryr
+    - we do a forward and then a bakcward loop.
+    */
+    vector<int> productExceptSelf(vector<int>& nums) {
+        vector<int> out;
+
+        if (nums.size() == 0) {
+            return out;
+        } else if (nums.size() == 1) {
+            out = {0};
+            return out;
+        }
+
+        int current = 1;
+        for (unsigned int i = 0; i < nums.size(); i++) {
+            out.push_back(current);
+            current *= nums[i];
+        }
+
+        int current = 1;
+        for (unsigned int i = 0; i < nums.size(); i++) {
+            out[out.size() - 1 - i] *= current;
+            current *= out[out.size() - 1 - i];
+        }
+
+        return out;
+    }
+};
 
 
 int main() {
