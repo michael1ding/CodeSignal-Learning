@@ -3,7 +3,8 @@
 CodeSignal Practice Problems!
 
 """
-
+from typing import List
+import typing
 
 from distutils.command.build import build
 import math
@@ -795,9 +796,61 @@ class Codec:
 
 
 class Solution:
-    """
-    
-    """
-    def reorderLogFiles(self, logs: List[str]) -> List[str]:
-        letter_log_address   
+    def isLetterLog(self, log: List) -> bool:
+        words = log.split(" ")
+        if  (words[1][0] >= "a" and words[1][0] <= "z") or (words[1][0] >= "A" and words[1][0] <= "Z"):
+            return True
         
+        return False
+
+    def getContents(self, log: List) -> List:
+        words = log.split(" ")
+
+        return " ".join(words[1:len(words)])
+    
+    def getIdentifier(self, log: List) -> List:
+        return log.split(" ")[0]
+
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        
+        count_letters = 0
+        count_digits = 0
+        
+        digits = []
+        letters = []
+            
+        for i in range(0, len(logs)):
+            if not self.isLetterLog(logs[i]):
+                digits.append(logs[i])
+            else:
+                letters.append(logs[i])
+    
+        first_digit = len(letters)
+                
+        logs[0:first_digit] = sorted(letters[0:first_digit], key = lambda x: (self.getContents(x), self.getIdentifier(x)))
+
+        logs[first_digit: len(logs)] = digits
+
+        return logs
+
+class Solution:
+    def recurseParen(self, n: int, curr_string: str, count_opens: int, outputs: list):
+        if n == 0:
+            for _ in range(count_opens):
+                curr_string += ")"
+                
+            outputs.append(curr_string)
+        
+        else:
+            self.recurseParen(n-1, curr_string + "(", count_opens + 1, outputs)
+            
+            if count_opens != 0:
+                self.recurseParen(n, curr_string + ")", count_opens - 1, outputs)
+    
+    
+    def generateParenthesis(self, n: int) -> List[str]:
+        output = []
+        
+        self.recurseParen(n, "", 0, output)
+        
+        return output
