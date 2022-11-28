@@ -854,3 +854,58 @@ class Solution:
         self.recurseParen(n, "", 0, output)
         
         return output
+
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        total = 0
+        mapped_vals = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+
+        i = 0
+        while i < len(s):
+            if i == len(s) - 1:
+                total += mapped_vals[s[i]]
+                i += 1
+            elif s[i] == "I" and (s[i+1] == "V" or s[i+1] == "X"):
+                total += mapped_vals[s[i+1]]
+                total -= 1
+                i += 2
+            elif s[i] == "X" and (s[i+1] == "L" or s[i+1] == "C"):
+                total += mapped_vals[s[i+1]]
+                total -= 10
+                i += 2 
+            elif s[i] == "C" and (s[i+1] == "D" or s[i+1] == "M"):
+                total += mapped_vals[s[i+1]]
+                total -= 100
+                i += 2 
+            else:
+                total += mapped_vals[s[i]]
+                i += 1
+        
+        return total
+
+class Solution:
+    def findCombinations(self, candidates: List, curr_candidates: List, remaining: int, output: List,
+                        found: set(), start: int) -> None:
+        if remaining < 0:
+            return
+        elif remaining == 0:
+            to_insert = sorted(curr_candidates)
+            if tuple(to_insert) not in found:
+                output.append(to_insert)
+                found.add(tuple(to_insert))
+        else:
+            for i in range(start, len(candidates)):
+                if len(curr_candidates) == 0:
+                    self.findCombinations(candidates, [candidates[i]], remaining - candidates[i], output, found, i)
+                else:
+                    curr_candidates.append(candidates[i])
+                    self.findCombinations(candidates, curr_candidates, remaining - candidates[i], output, found, i)
+                    curr_candidates.pop()
+    
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        output = []
+        curr_candidate = []
+        found = set()
+        self.findCombinations(candidates, curr_candidate, target, output, found, 0)
+        
+        return output
