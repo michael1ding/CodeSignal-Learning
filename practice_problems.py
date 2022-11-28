@@ -909,3 +909,18 @@ class Solution:
         self.findCombinations(candidates, curr_candidate, target, output, found, 0)
         
         return output
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        total = 0
+        curr_max = -1e4 - 1
+        
+        for r in range(len(nums)):
+            if total > 0:
+                total += nums[r]
+                curr_max = max(curr_max, total)
+            else:
+                total = nums[r]
+                curr_max = max(curr_max, total)
+        
+        return curr_max
