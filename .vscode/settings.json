@@ -9,7 +9,8 @@
         "string": "cpp",
         "string_view": "cpp",
         "unordered_set": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "tuple": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

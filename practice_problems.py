@@ -924,3 +924,164 @@ class Solution:
                 curr_max = max(curr_max, total)
         
         return curr_max
+
+class Solution:
+    """
+    intuition 1:
+    - we can either choose to take or not take each element in nums
+    - this generates 2^n possibilities where n is at most 10
+    - 10 * 2 ^ 10 32 * 32 = 16 * 16 * 4 = 1024   2^n
+    
+    - 2^n combinations
+    - n bits to store this information
+    - [] -> 000
+    - [1] -> 001
+    - [2] -> 010
+    
+    - 111 -> 7 
+
+    
+    """
+#     def findSubsets(self, nums: List[int], start, curr: List[int], output: List[List[int]]):
+#         to_insert = curr.copy()
+#         output.append(to_insert)
+        
+        
+#         for i in range(start, len(nums)):
+#             curr.append(nums[i])
+#             self.findSubsets(nums, i + 1, curr, output)
+#             curr.pop()
+    
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        output = []
+        
+        # self.findSubsets(nums, 0, [], output)
+        
+        for i in range(0, 2**len(nums)):
+            arr = []
+            for j in range(0, len(nums)):
+                if (i >> j) % 2 == 1:
+                    arr.append(nums[j])
+            
+            output.append(arr)
+        
+        return output
+
+
+class PeekingIterator:
+    def __init__(self, iterator):
+        """
+        Initialize your data structure here.
+        :type iterator: Iterator
+        """
+        self.it = iterator
+        self.peeked_val = None
+        self.next_exists = self.it.hasNext()
+        
+
+    def peek(self):
+        """
+        Returns the next element in the iteration without advancing the iterator.
+        :rtype: int
+        """
+        if not self.peeked_val:
+            self.peeked_val = self.it.next()
+        
+        return self.peeked_val
+        
+
+    def next(self):
+        """
+        :rtype: int
+        """
+        if self.peeked_val != None:
+            self.next_exists = self.it.hasNext()
+            ret_val = self.peeked_val
+            self.peeked_val = None
+            return ret_val
+        else:
+            ret_val = self.it.next()
+            self.next_exists = self.it.hasNext()
+            return ret_val
+        
+
+    def hasNext(self):
+        """
+        :rtype: bool
+        """
+        return self.next_exists
+
+
+class Solution:
+    """
+    amount = 11
+    coins = 1 2 5
+
+    0 1 2 3 4 5 6 7 8 9 10 11
+    0 1 1 0 0 1 0 0 0 0 0  0
+    0 1 1 
+
+    """
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        minimums = [None] * (len(amount) + 1)
+        for i in range(len(minimums)):
+            for coin_val in coins:
+                minimums[i + coin_val] = min(minimums[i + coin_val], minimums[i] + 1)
+        
+        return -1 if minimums[-1] is None else minimums[-1]
+
+
+
+class Solution:
+    """
+    0 1 2 3 4 5
+
+    1: 1
+    2: 1
+    3: 1, 2
+    4: 1, 2
+    5: 
+    """
+
+    def canCross(self, stones: List[int]) -> bool:
+        if stones[1] != 1:
+            return False
+    
+        reachable = [0] * len(stones)
+        reachable[0] = 1
+        reachable[1] = 1
+        valid_stones = set(stones)
+        prev_jumps = dict() # stores stone value -> set of jumps leading to stone
+        prev_jumps[1] = set()
+        prev_jumps[1].add(1)
+
+        # for i in range(0, len(stones)):
+        #     stones_to_index[stones[i]] = i
+
+        for stone in stones:
+            if stone not in valid_stones: # this is the water
+                continue
+            elif stone not in prev_jumps: # this is not a valid stone
+                continue
+            
+            for jump in prev_jumps[stone]:
+                if stone + jump - 1 in valid_stones and jump - 1 != 0:
+                    if stone + jump - 1 not in prev_jumps:
+                        prev_jumps[stone + jump - 1] = set()
+                    prev_jumps[stone + jump - 1].add(jump - 1)
+                
+                if stone + jump in valid_stones:
+                    if stone + jump not in prev_jumps:
+                        prev_jumps[stone + jump] = set()
+                    prev_jumps[stone + jump].add(jump)
+
+                if stone + jump + 1 in valid_stones:
+                    if stone + jump + 1 not in prev_jumps:
+                        prev_jumps[stone + jump + 1] = set()
+                    prev_jumps[stone + jump + 1].add(jump + 1)
+
+        return stones[-1] in prev_jumps 
+            
+                    
+                

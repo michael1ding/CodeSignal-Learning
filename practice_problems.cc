@@ -2,9 +2,17 @@
 #include <map>
 #include <unordered_set>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
 
 class DLinkedNode {
     public:
@@ -184,6 +192,194 @@ public:
         return out;
     }
 };
+
+class Solution {
+public:
+    // ieee
+    /*
+    32 bit -> - 2^31 -> 2^31 - 1
+    
+    
+    note: >> 1 divides by 2 
+    
+    1101
+    
+    1011
+    
+    10
+    
+    101
+    
+    */
+    uint32_t reverseBits(uint32_t n) {
+        unsigned int out = 0;
+        for (int i = 0; i < 32; i++) {
+            unsigned int val = (n << 32) >> 32;
+            out = out * 2 + val;
+            n = n >> 1;
+        }
+        return out;
+    }
+};
+
+class Solution {
+public:
+    /*
+        1. 
+        maintain a reference to an integer counter
+        we recursively call on down and right if possible
+        we update counter + 1 if we reach finish
+
+        2. queue based bfs approach, iterative 
+        at each step, we queue the left and bottom addresses to be visited
+        when we reach finish, we update our count
+        loop until the queue is empty
+
+        3. subproblems:
+        intution: the amount of ways to reach grid[i][j] is grid[i-1][j] + grid[i][j-1]
+        we can build out our solution in O(mn)
+
+    */
+    int uniquePaths(int m, int n) {
+        if (m == 0 && n == 0) {
+            return 1;
+        }
+        vector<vector<int>> solution;
+
+        for (unsigned int i = 0; i < m; i++) {
+            vector<int> layer;
+            for (unsigned int j = 0; j < n; j++) {
+                layer.push_back(0);
+            }
+            solution.push_back(layer);
+        }
+
+        for (unsigned int i = 0; i < m; i++) {
+            for (unsigned int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    solution[i][j] = 1;
+                } else if (i - 1 < 0) {
+                    solution[i][j] = solution[i][j-1];
+                } else if (j - 1 < 0) {
+                    solution[i][j] = solution[i-1][j];
+                } else {
+                    solution[i][j] = solution[i-1][j] + solution[i][j-1];
+                }
+            }
+        }
+
+        return solution[m-1][n-1];
+    }
+};
+
+class Solution {
+public:
+    tuple<double, double> getLinearEquation(tuple<int, int>& ref1, tuple<int, int> ref2) {
+        double slope = (double)(get<1>(ref2)- get<1>(ref1)) / (double)(get<0>(ref2) - get<0>(ref1));
+        double y_int = (double)get<1>(ref2) - (double)(get<0>(ref2) * slope);
+        tuple <double, double> out = make_tuple(slope, y_int);
+        return out;
+    }
+
+    bool isCollinear(tuple<int, int>& ref1, tuple<int, int>& ref2, tuple<int, int>& new_point) {
+        double slope = (double)(get<1>(ref2) - get<1>(ref1)) / (double)(get<0>(ref2) - get<0>(ref1));
+        return (get<1>(new_point) == (get<0>(new_point) - get<0>(ref1)) * slope + get<1>(ref1));
+    }
+
+    int maxPoints(vector<vector<int>>& points) {
+        if (points.size() == 1) {
+            return 1;
+        }
+        unordered_map<tuple<double, double>, unordered_set<tuple<int, int>>> equations;
+
+        for (unsigned int i = 0; i < points.size(); i++) {
+            for (unsigned int j = i + 1; j < points.size(); j++) {
+                tuple<int, int> ref_i = make_tuple(points[i][0], points[i][1]);
+                tuple<int, int> ref_j = make_tuple(points[j][0], points[j][1]);
+                tuple<double, double> lin_equation = getLinearEquation(ref_i, ref_j);
+                if (equations.find(lin_equation) == equations.end()) {
+                    unordered_set<tuple<int, int>> points_on_line;
+                    points_on_line.insert(ref_i);
+                    points_on_line.insert(ref_j);
+                    equations[lin_equation] = points_on_line;
+                } else {
+                    if (equations[lin_equation].find(ref_i) != equations[lin_equation].end()) {
+                        equations[lin_equation].insert(ref_i);
+                    }
+                    if (equations[lin_equation].find(ref_j) != equations[lin_equation].end()) {
+                        equations[lin_equation].insert(ref_j);
+                    }
+                }
+            }
+        }
+
+        int most = 0;
+        for (auto& it: equations) {
+            most = max(most, (int)it.second.size());
+        }
+        return most;
+    }
+};
+
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        if (board.size() != 9 || board[0].size() != 9) {
+            return false;
+        }
+
+        for (unsigned int i = 0; i < board.size(); i++) {
+            unordered_set<char> seen;
+            for (unsigned int j = 0; j < board[0].size(); j++) {
+                if (seen.find(board[i][j]) == seen.end()) {
+                    seen.insert(board[i][j]);
+                } else if (board[i][j] != '.') {
+                    return false;
+                }
+            }
+        }
+        for (unsigned int i = 0; i < board.size(); i++) {
+            unordered_set<char> seen;
+            for (unsigned int j = 0; j < board[0].size(); j++) {
+                if (seen.find(board[j][i]) == seen.end()) {
+                    seen.insert(board[j][i]);
+                } else if (board[j][i] != '.') {
+                    return false;
+                }
+            }
+        }
+        for (unsigned int i = 0; i < 3; i++) {
+            for (unsigned int j = 0; j < 3; j++) {
+                unordered_set<char> seen;
+                for (unsigned int r = 0; r < 3; r++) {
+                    for (unsigned int c = 0; c < 3; c++) {
+                        if (seen.find(board[i * 3 + r][j * 3 + c]) == seen.end()) {
+                            seen.insert(board[i * 3 + r][j * 3 + c]);
+                        } else if (board[i * 3 + r][j * 3 + c] != '.') {
+                            cout << i * 3 + r << " " << j * 3 + c << endl;
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+};
+
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* out = nullptr;
+        while (list1 && list2) {
+
+        }
+    }
+};
+
+
 
 
 int main() {
