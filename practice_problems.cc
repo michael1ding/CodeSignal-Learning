@@ -3,6 +3,9 @@
 #include <unordered_set>
 #include <vector>
 #include <tuple>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -442,6 +445,27 @@ public:
             next = temp;
         }
         return curr;
+    }
+};
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        string out = "";
+        istringstream iss(s);
+        while(iss) {
+            string word;
+            iss >> word;
+            for (int i = 0; i < word.length() / 2; i++) {
+                swap(word[i], word[word.length() - 1 - i]);
+            }
+            out += word;
+            out += " ";
+        }
+        if (!out.empty()) {
+            out = out.substr(0, out.length() - 1);
+        }
+        return out;
     }
 };
 
