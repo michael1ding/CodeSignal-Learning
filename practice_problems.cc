@@ -423,7 +423,27 @@ public:
     }
 };
 
-
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if (!head) {
+            return head;
+        }
+        ListNode *curr = head;
+        ListNode *next = head->next;
+        if (!next) {
+            return head;
+        }
+        head->next = nullptr;
+        while (next) {
+            ListNode *temp = next->next;
+            next->next = curr;
+            curr = next;
+            next = temp;
+        }
+        return curr;
+    }
+};
 
 int main() {
     return 0;
