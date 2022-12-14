@@ -3,7 +3,7 @@
 CodeSignal Practice Problems!
 
 """
-from typing import List
+from typing import List, Optional
 import typing
 
 from distutils.command.build import build
@@ -1082,6 +1082,56 @@ class Solution:
                     prev_jumps[stone + jump + 1].add(jump + 1)
 
         return stones[-1] in prev_jumps 
+
+
+"""
+babad
+
+bbcd
+
+
+
+"""
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        out = ""         
+        for i in range(0, len(s)):
+            l1, r1 = self.expandOut(s, i, i)
+            l2, r2 = self.expandOut(s, i, i + 1)
+            if (max(r1 - l1, r2 - l2) > len(out)):
+                if r1 - l1 > r2 - l2:
+                    out = s[l1 : r1 + 1]
+                else:
+                    out = s[l2: r2 + 1]
+        
+        return out
+
+    def expandOut(self, s, l, r):
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        
+        return l, r
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def recurse_tree(self, node: TreeNode):
+        if not node:
+            return True, 0
+        
+        left_balanced, left_height = self.recurse_tree(node.left)
+        right_balanced, right_height = self.recurse_tree(node.right)
+
+        if left_balanced and right_balanced and abs(left_height - right_height) <= 1:
             
-                    
-                
+
+
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        balanced, height = self.recurse_tree(root)
+        return balanced
