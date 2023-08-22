@@ -1129,7 +1129,9 @@ class Solution:
         right_balanced, right_height = self.recurse_tree(node.right)
 
         if left_balanced and right_balanced and abs(left_height - right_height) <= 1:
-            
+            return True, max(left_height + 1, right_height + 1)
+        else:
+            return False, -1
 
 
     def isBalanced(self, root: Optional[TreeNode]) -> bool:
