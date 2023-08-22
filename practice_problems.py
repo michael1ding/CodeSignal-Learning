@@ -1129,11 +1129,33 @@ class Solution:
         right_balanced, right_height = self.recurse_tree(node.right)
 
         if left_balanced and right_balanced and abs(left_height - right_height) <= 1:
-            return True, max(left_height + 1, right_height + 1)
-        else:
-            return False, -1
-
+            return 0
+            
 
     def isBalanced(self, root: Optional[TreeNode]) -> bool:
         balanced, height = self.recurse_tree(root)
         return balanced
+    
+
+
+class KthLargest:
+
+    def __init__(self, k: int, nums: List[int]):
+        self.k = k
+        self.nums = nums
+        self.output = None
+
+    def add(self, val: int) -> int:
+        # since we are guaranteed at leas k elements in array upon search for kth element
+        # we can then directly compute kth element
+        # method 1: calculate each time
+        # method 2: if already cached, simply do some logic to output the new kth largest
+        self.nums.append(val)
+        
+        self.nums = sorted(self.nums)
+
+        for i in range(len(self.nums)):
+            if i == self.k:
+                self.output = self.nums[i]
+                return self.nums[i]
+    
