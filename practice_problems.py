@@ -1159,3 +1159,53 @@ class KthLargest:
                 self.output = self.nums[i]
                 return self.nums[i]
     
+
+
+def first_duplicate(a):
+    vals = set()
+    for val in a:
+        if val not in vals:
+            vals.add(val)
+        else:
+            return val
+            
+    return -1
+
+def first_not_repeating(s):
+    unique = dict()
+    repeat = set()
+    for ind in range(len(s)):
+        if s[ind] in repeat:
+            continue
+        elif s[ind] in unique:
+            unique.pop(s[ind])
+            repeat.add(s[ind])
+        else:
+            unique[s[ind]] = ind
+    
+    min_ind = 10e5
+    out = "_"
+    for c, ind in unique.items():
+        if ind < min_ind:
+            out = c
+            min_ind = ind
+    
+    return out
+
+
+def first_not_repeating_2(s):
+    
+    # backwards iterate through s and find last occurences of chars
+    last_seen = dict()
+    for ind in range(len(s) - 1, -1, -1):
+        if s[ind] not in last_seen:
+            last_seen[s[ind]] = ind
+        else:
+            last_seen[s[ind]] = -1
+    
+    # go forwards and see if we have
+    for ind in range(len(s)):
+        if last_seen[s[ind]] == ind:
+            return s[ind]
+            
+    return "_"
