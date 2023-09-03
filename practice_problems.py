@@ -1209,3 +1209,148 @@ def first_not_repeating_2(s):
             return s[ind]
             
     return "_"
+
+
+
+def rotateImage(a):
+    """
+        idea: create a function rotate_outer(matrix, layer, size), which cyclese the values
+        of the outer values at layer in clockwise direction
+
+        eg (0, 0) -> (0, n-1) -> (n-1, n-1) -> (n-1, 0) -> (0, 0)
+
+        call rotate_outer(0 -> n), rotate_outer has no return type
+    """
+
+    def rotate_outer(matrix, layer, size):
+        for offset in range(0, size - layer * 2):
+            if (layer + offset) >= (size - 1) - layer: # we have done all rotations
+                return
+            
+            tl_x, tl_y = layer, layer + offset
+            tr_x, tr_y = layer + offset, (size - 1) - layer
+            br_x, br_y = (size - 1) - layer, (size - 1) - layer - offset
+            bl_x, bl_y = (size - 1) - layer - offset, layer
+
+            matrix[tl_x][tl_y],  matrix[tr_x][tr_y], matrix[br_x][br_y], matrix[bl_x][bl_y] = matrix[bl_x][bl_y], matrix[tl_x][tl_y], matrix[tr_x][tr_y], matrix[br_x][br_y]
+    
+    for i in range(0, math.ceil(len(a)/2)):
+        rotate_outer(a, i, len(a))
+        
+    return a
+
+
+def validSudoku(grid):
+    """
+        given: grid is a sudoku puzzle (3x3 2d matrix) of chars, '.' or a number (char).
+        rule 1: rows 1-9
+        rule 2: columns 1-9
+        rule 3: 3x3 square is 1-9
+
+        can we use only subset of rules to cover all 3 (so we do less work)? 
+        no i think, we can find counterexamples for all
+
+        approach: run through all 3 rules on the whole board 
+        we do this by keeping a set and running through all 3
+        we can also us a size 1-9 array, filling it with 0s and resetting after each.
+    """
+
+    mask = [0] * 9
+
+    # check rule 1
+    for row in grid:
+        for val in row:
+            # if val - '0' < 1 or val - '0' > 9:
+            #     raise Exception("problem with inputs, non 1-9")
+            if val != '.' and mask[int(val)-1] != 0:
+                return False
+            elif val != '.':
+                mask[int(val)-1] = 1
+        
+        for ind in range(0, 9):
+            mask[ind] = 0
+
+    # check rule 2
+    for col in range(0, 9):
+        for row in range (0, 9):
+            if grid[row][col] != '.' and mask[int(grid[row][col])-1] != 0:
+                return False
+            elif grid[row][col] != '.':
+                mask[int(grid[row][col])-1] = 1
+        
+        for ind in range(0, 9):
+            mask[ind] = 0
+
+    # check rule 3
+    # we use left and top to represent the top left of the 3x3 square
+    for left in range(0, 3):
+        for top in range(0, 3):
+            for row in range(0, 3):
+                for col in range(0, 3):
+                    cell = grid[top * 3 + row][left * 3 + col]
+                    if cell != '.' and mask[int(cell)-1] != 0:
+                        return False
+                    elif cell != '.':
+                        mask[int(cell)-1] = 1
+            
+            for ind in range(0, 9):
+                mask[ind] = 0
+
+    return True
+
+
+
+def isCrypt(crypt, solution):
+    """
+        theres a couple problems here, lets break it down
+
+        1. the decryption problem: we need to interpret the words as numbers
+        2. the leading zeros problem: we need to ensure we have no leading zeroes at all
+        3. the arithmetic problem: check that the arithmetic expression is true
+
+        solve 1 by literally converting a crypt[0, 1, 2] to corresponding strings.
+        if anything cant be fullying decrypted, return false.
+        note, we dont do inplace decryption, because probably we wouldnt call this function
+        with deep copies of 3 strings in crypt
+
+        solve 2 by converting the decrypted to an integer, then converting to string and
+        comparing if we have string quality. if they are not equal, then there were leading 0s
+        (strictly exclusive of 0 itself)
+
+        solve 3 by just adding
+
+        if anything fails along these steps, then return False
+    """
+    solution_map = dict()
+    for mapping in solution:
+        solution_map[mapping[0]] = mapping[1]
+
+    def decrypt(s):
+        out = ""
+        for char in s:
+            if char not in solution_map:
+                return "error"
+            out += solution_map[char]
+        return out
+
+    # Step 1: decrypting
+    word1 = decrypt(crypt[0])
+    word2 = decrypt(crypt[1])
+    word3 = decrypt(crypt[2])
+    if word1 == "error" or word2 == "error" or word3 == "error":
+        return False
+
+    # Step 2: leading zeros
+    if str(int(word1)) != word1 or str(int(word2)) != word2 or str(int(word3)) != word3:
+        return False
+    word1 = int(word1)
+    word2 = int(word2)
+    word3 = int(word3)
+    
+    # Step 3: Arithmetic
+    if word1 + word2 != word3:
+        return False
+    
+    return True
+
+
